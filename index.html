@@ -26,7 +26,7 @@
 
         document.getElementById('zip').addEventListener('blur', function () {
             console.log("No focus")
-            fetch("https://collectibles.minicoagentportal.com/zipcode/27705", {
+            fetch("https://collectibles.minicoagentportal.com/zipcode/" +document.getElementById('zip').value , {
                 "headers": {
                     "accept": "*/*",
                     "accept-language": "en-US,en;q=0.9",
