@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Policy - Quote Test</title>
+</head>
+
+<body>
+    <div id="info">
+        <p id="zipCode"></p>
+        <div id="results"></div>
+    </div>
+
+    <label for="zip">Zip Code:</label>
+    <input type="text" id="zip" name="zip"><br>
+
+
+    <label for="collection">Collection Value (integers only, no commas):</label>
+    <input type="text" id="collection" name="collection"><br>
+
+
+    <input type="submit" value="Submit" id="subQuote">
+    <script>
+
+        document.getElementById('zip').addEventListener('blur', function () {
+            console.log("No focus")
+            fetch("https://collectibles.minicoagentportal.com/zipcode/27705", {
+                "headers": {
+                    "accept": "*/*",
+                    "accept-language": "en-US,en;q=0.9",
+                    "cache-control": "no-cache",
+                    "pragma": "no-cache",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin"
+                },
+                "referrer": "https://collectibles.minicoagentportal.com/QuickQuote/",
+                "referrerPolicy": "no-referrer-when-downgrade",
+                "body": null,
+                "method": "GET",
+                "mode": "cors",
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("zipCode").innerText = `${data.city}, ${data.state}`;
+                    console.log(data);
+                });
+        })
+        document.getElementById("subQuote").addEventListener('click', function () {
+            console.log("CLICKED")
+
+
+            fetch("https://collectibles.minicoagentportal.com/zipcode/27705", {
+                "headers": {
+                    "accept": "*/*",
+                    "accept-language": "en-US,en;q=0.9",
+                    "cache-control": "no-cache",
+                    "pragma": "no-cache",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin"
+                },
+                "referrer": "https://collectibles.minicoagentportal.com/QuickQuote/",
+                "referrerPolicy": "no-referrer-when-downgrade",
+                "body": null,
+                "method": "GET",
+                "mode": "cors",
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    document.getElementById("zipCode").innerText = `${data.city}, ${data.state}`;
+                    console.log(data);
+                    fetch("https://collectibles.minicoagentportal.com/premium", {
+                        "headers": {
+                            "accept": "*/*",
+                            "accept-language": "en-US,en;q=0.9",
+                            "cache-control": "no-cache",
+                            "content-type": "application/json",
+                            "pragma": "no-cache",
+                            "sec-fetch-dest": "empty",
+                            "sec-fetch-mode": "cors",
+                            "sec-fetch-site": "same-origin"
+                        },
+                        "referrer": "https://collectibles.minicoagentportal.com/QuickQuote/",
+                        "referrerPolicy": "no-referrer-when-downgrade",
+                        "body": "{\"collections\":[{\"id\":\"B66B336C-2736-4065-818B-0D082A53BE0B\",\"description\":\"Jewelry & Watch\",\"totalInsuredValue\":" + document.getElementById("collection").value + ",\"unallocatedValue\":" + document.getElementById("collection").value + "}],\"ratingZip\":\"" + data.zipCode + "\",\"ratingState\":\"" + data.state + "\",\"locations\":[{\"collections\":[],\"scheduledItems\":[{\"id\":\"0b44046a-0ea1-ad35-084b-6c5facd81960\"}],\"locationNumber\":1,\"state\":\"" + data.state + "\",\"zipCode\":\"" + data.zipCode + "\"}],\"websiteCode\":\"agentportal\",\"agentIdentifier\":\"7e2ec20b-4318-404a-a4c6-5995bc58dce3\"}",
+                        "method": "POST",
+                        "mode": "cors",
+                        // "credentials": "include"
+                    })
+                        .then((response) => {
+                            return response.json();
+                        })
+                        .then((data) => {
+                            console.log(data.map(e => e.deductibleAmount));
+                            console.log(data.map(e => e.premium));
+                            const area = document.getElementById("results")
+                            area.innerHTML = '<ul>' + data.map(function (e) {
+                                return '<li>' + "Deductible $" + e.deductibleAmount + " | Premium $" + e.premium +  '</li>';
+                            }).join('') + '</ul>';
+                        });
+                });
+
+
+
+
+            console.log(document.getElementById("collection").value)
+
+        })
+    </script>
+</body>
+
+</html>
